@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>天气预报和菜谱</title>
+    <script src="vue.js"></script>
+    <script src="axios.js"></script>
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<style type="text/css">
+		td{
+			text-align: center;
+			line-height: normal;
+		}
+		.container1 select{
+			background-color: whitesmoke;
+			width: 150px;
+			height: 25px;
+			color: black;
+		}
+		.yeye{
+			display: flex;
+		}
+		.container1 button{
+			margin-left: 10px;
+			height: 25px;
+			line-height: 8px;
+		}
+		.inner{
+			display: flex;
+		}
+		.navbar{
+			display: flexbox;
+		}
+		.navbar-header{
+			display: flex;
+			position: relative;
+			left: 800px;}
+		.one{
+			margin-top: 12px;
+		}
+	</style>
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+            
+					<nav class="navbar navbar-inverse">
+						<div id="lll">
+							<a class="navbar-brand" href="#"><strong>今晚的月色会美么</strong></a>
+						</div>
+					    <div class="container-fluid">
+					      <div class="navbar-header">
+							  <div v-for="(item,index) in list5"><img width="40" :src="'../icon/' + item + '.png'" alt=""></div>
+							  &nbsp;
+							  &nbsp;
+							  &nbsp;
+							  <div class="one" v-for="(item,index) in list4"><span style="color: whitesmoke;"><strong>{{item}}°C</strong></span></div>
+							&nbsp;
+							&nbsp;
+							  <div class="one" v-for="(item,index) in list6"><span style="color: whitesmoke;"><strong>{{item}}</strong></span></div>
+					      </div>
+						  
+					    </div>
+						
+					
+					</nav>
+					
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                      <nav aria-label="...">
+                        <ul class="pager">
+                          <li class="previous" @click="qihuanfun(true)"><a href="#" style="background-color: #00A3AF; color: #000000;"><span aria-hidden="true">&larr;</span> 天气预报</a></li>
+                          <li class="next" @click="qihuanfun(false)"><a href="#"  style="background-color: #00A3AF; color: #000000;">菜谱 <span aria-hidden="true">&rarr;</span></a></li>
+                        </ul>
+                      </nav>
+<!--天气预报，当hidden==true的时候显示-->
+           <div v-if="hidden">
+              <div class="page-header">
+                <h1> <strong>属于你的天气预报</strong></h1>
+				<h4>每一个明天都是未知的，但是我将尽我所能让你知晓明天的风雨</h4>
+              </div>
+			  <br>
+			  <div class="container1">
+			  	<div class="input-group">
+					<div class="yeye">
+					 输入你的省份：
+			   		<select name="" v-model="pro">
+			   		<option v-for="(item,index) in listr">{{index}}</option>
+			   		</select>
+					&nbsp;
+					&nbsp;
+					&nbsp;
+					输入你的城市：
+			   		<select name="" v-model="city">
+			   		<option v-for="(item,index) in listr[pro]">{{item}}</option>
+			   		</select>
+					<br>
+					<br>
+					<br>
+					<button type="button" class="btn btn-info" @click="getWeather">Go!</button>	
+					</div>
+			      </div>
+			  </div>
+			   
+			   <br>
+			   <br>
+			   <br>
+			   <br>
+               <div class="result">
+                   <table class="table table-bordered">
+                       <tr>
+                           <td>日期</td>
+                           <td>风向</td>
+                           <td>最高温度</td>
+                           <td>最低温度</td>
+                           <td>天气</td>
+                       </tr>
+                       <tr v-for="(item,index) in list1">
+                           <td>{{ item.date }}</td>
+                           <td>{{ item.day.winddirect }}</td>
+                           <td>{{ item.day.temphigh }}</td>
+                           <td>{{ item.night.templow }}</td>
+						   <td><img width="40" :src="'../icon/' + item.day.img + '.png'" alt=""></td>
+                       </tr>
+                   </table>
+				   <div class="panel panel-primary"   v-for="(itemss,indexs) in list3">
+					   <div class="list-group">
+					     <a href="#" class="list-group-item active">
+					      Just Love Her
+					     </a>
+					     <a href="#" class="list-group-item"> {{itemss.detail}}</a>
+					     <a href="#" class="list-group-item"> {{itemss.iname}}</a>
+					     <a href="#" class="list-group-item"> {{itemss.ivalue}}</a>
+					   </div>
+				   </div>
+               </div>
+               
+           </div>
+		   <br>
+		   <br>
+		   <br>
+<!--            菜谱，当hidden==false的时候显示-->
+            <div v-if="!hidden">
+				<div class="jumbotron">
+				  <h1>今天想吃什么？</h1>
+				  <p>即便我不知道你想吃什么，但我也会尽我所能找到你想吃的</p>
+				</div>
+				<div class="inner">
+				<div class="list-group" style="width: 300px;">
+				  <a href="#" class="list-group-item active">
+				    今日推荐
+				  </a>
+				  <a href="#" class="list-group-item">麻婆豆腐</a>
+				  <a href="#" class="list-group-item">水煮牛肉</a>
+				  <a href="#" class="list-group-item">鲫鱼牛逼汤</a>
+				</div>
+				&nbsp;
+				<div class="list-group" style="width: 300px;">
+				  <a href="#" class="list-group-item active" style="background-color: #87CEEB">
+				    不会就点我
+				  </a>
+				  <a href="#" class="list-group-item">麻辣香锅</a>
+				  <a href="#" class="list-group-item">红烧鱼</a>
+				  <a href="#" class="list-group-item">牛排</a>
+				</div>
+				&nbsp;
+				<div class="list-group" style="width: 300px;">
+				  <a href="#" class="list-group-item active" style="background-color: 	#D87093">
+				    你想吃吗？
+				  </a>
+				  <a href="#" class="list-group-item">红烧排骨</a>
+				  <a href="#" class="list-group-item">佛跳墙</a>
+				  <a href="#" class="list-group-item">酸菜鱼</a>
+				</div>
+				&nbsp;
+				<div class="list-group" style="width: 300px;">
+				  <a href="#" class="list-group-item active" style="background-color: #4B0082;">
+				    高级料理
+				  </a>
+				  <a href="#" class="list-group-item">雅蔑蝶</a>
+				  <a href="#" class="list-group-item">鸭嘴兽</a>
+				  <a href="#" class="list-group-item">故乡的花开了</a>
+				</div>
+				</div>
+				 <div class="input-group">
+					    <div class="form-group">
+					        <!-- <label for="keyword">输入关键字，白菜</label> -->
+							<input type="text" class="form-control" width="100px" v-model="keyword" id="keyword" placeholder="Search for...">
+					        <!-- <input type="text" class="form-control" v-model="keyword" id="keyword" placeholder="白菜"> -->
+					    </div>
+				      <span class="input-group-btn">
+				        <button class="btn btn-default" type="submit" @click="caipu">Go!</button>
+				      </span>
+				    </div>
+					<div class="media" v-for="(item,index) in list2">
+					  <div class="media-left media-middle">
+					    <a href="#">
+					      <img class="media-object" :src="item.pic" alt="你的菜">
+					    </a>
+					  </div>
+					  <div class="media-body">
+					    <h4 class="media-heading">{{ item.name }}</h4>
+						<p>{{ item.content }}</p>
+					    
+					  </div>
+					</div>
+		</div>
+
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    /*
+    *   接口:/getweather
+    *
+    *   type:get
+    *
+    *   参数:city=城市名称
+    *
+    * */
+    new Vue({
+        el:'#app',
+        data:{
+			city:'',
+            list1:null,
+			list3:null,
+			list4:null,
+			list5:null,
+			list6:null,
+            hidden:true,
+            keyword:'猪肉',
+            num:5,
+            list2:[],
+			listr:{
+				'广西':['玉林','博白','桂林','南宁','百色','北海','防城港'],
+			'广东':['广州','佛山','云浮','深圳','中山','汕头'],
+			'台湾':['台北','台中','台南','高雄']
+			},
+			pro:'',
+        },
+        methods:{
+            getWeather:function(){
+                let _this = this;
+                axios.get('http://192.168.92.62:3000/getweather?city=' + this.city).then(function (response) {
+                    console.log(response.data.result);
+                    _this.list1 = response.data.result.daily
+                    _this.list3 = response.data.result.index
+                    _this.list4 = response.data.result.temp
+                    _this.list5 = response.data.result.img
+                    _this.list6 = response.data.result.week
+					console.log(response.data.result.week)
+					
+                })
+            },
+            qihuanfun:function(bool){
+                this.hidden = bool;
+            },
+			caipu:function(){
+			    let _this = this;
+			    axios.get('http://192.168.92.62:3000/getcaipu?keyword='+ this.keyword +'&num=' +  this.num).then(function (response) {
+			        console.log(response.data.result.list);
+					
+			        _this.list2 = response.data.result.list
+			    })
+			
+			}
+        },
+		beforeMount:function(){
+			this.getWeather();
+		}
+    })
+</script>
