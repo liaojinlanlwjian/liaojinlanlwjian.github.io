@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>music_three</title>
+		<script src="../vue/vue.js"></script>
+		<script src="../1.11/axios.js"></script>
+		<style type="text/css">
+			*{
+				margin: 0px;
+				padding: 0px;
+				list-style: none;
+			}
+			img:hover {
+			    transform: translateX(-10px);
+			    transition: all .5s ease;
+			}
+			a{
+				text-decoration: none;
+			}
+			a:hover {
+			    text-decoration: underline;
+			}
+			#container{
+				/* display: flex; */
+				width: 100%;
+			}
+			#inner_one{
+				width: 30%;
+				height: 800px;
+				position: fixed;
+				top: 0px;
+				float: left;
+				background:url(../img/m16.jpeg);
+				background-repeat: no-repeat;
+				background-size:30% 120%;
+				background-attachment: fixed;
+			}
+			#dinner{
+				width: 400px;
+				height: 500px;
+				margin: 100px auto;
+				margin-right: 10px;
+			}
+			#touxiang img{
+				width: 80px;
+				height: 80px;
+				border-radius: 50%;
+				box-shadow: 0px 0px 50px brown;
+			}
+			h4{
+				font-size: 20px;
+				color: gainsboro;
+				text-indent: 1em;
+			}
+			h6{
+				font-size: 21px;
+				color: whitesmoke;
+				text-indent: 1em;
+			}
+			.inner{
+				float: right;
+			}
+			.inner li{
+				text-align: center;
+				line-height: 86px;
+			}
+			.ycan{
+				margin-top: -25px;
+				height: 0px;
+				overflow: hidden;
+			}
+			.ycan li{
+				width: 100px;
+				height: 50px;
+				background: url(../img/m13.jpeg);
+				background-repeat: no-repeat;
+				background-size:10% 100%;
+				background-attachment: fixed;
+				font-size: 15px;
+				color: white;
+				border: 1px solid gainsboro;
+				border-radius: 7% 7% 7% 7%;
+				line-height: 50px;
+				text-align: center;
+				margin-top: 1px;
+			}
+			.ycan li a{
+				color: white;
+			}
+			li:hover ul{
+				height: 500px;
+				transition: 2s linear 0s; 
+			}
+			#inner_two{
+				width: 70%;
+				height: 1600px;
+				float: right;
+				background-color: lightgray;
+			}
+			#outer{
+				width: 90%;
+				height: 100%;
+				background-color:whitesmoke;
+				border-radius: 1%;
+				margin: 0px auto;
+				margin-top: 5px;
+				
+			}
+			#imgag{
+				width: 100%;
+				height: 300px;
+				background-color: wheat;
+				margin-top: 10px;
+				display: flex;
+				border-radius: 10%;
+			}
+			#imgag img{
+				width: 100%;
+				height: 300px;
+				border-radius: 10%;
+				/* box-shadow: 0px 0px 10px brown; */
+			}
+			#cont{
+				
+			}
+			#gequ{
+				display: flex;
+				width: 100%;
+				height: 200px;
+			}
+			#gequ_one{
+				width: 100%;
+				height: 200px;
+				margin-left: 80px;
+			}
+			h1{
+				text-indent: 2em;
+			}
+			h3{
+				text-indent: 8em;
+			}
+			h5{
+				font-size: 23px;
+				text-indent: 2em;
+			}
+			h5 a{
+				color: paleturquoise;
+			}
+			p{
+				text-indent: 3em;
+				font-size: 20px;
+				font-family: "blackadder itc";
+				white-space:normal; width:500px;
+				margin: 100px auto;
+			}
+			#bottom{
+				width: 100%;
+				height: 500px;
+				background: url(../img/m11.jpeg);
+				background-repeat: no-repeat;
+				background-size:100% 120%;
+				background-attachment: fixed;
+			}
+		</style>
+	</head>
+	<body>
+			
+			<div id="app">
+				<div id="inner_one">
+					<div>
+						<ul class="inner">
+							<li><a href=""><img src="../icon/0.png" ></a>
+							<ul class="ycan">
+								<li><a href="博客.html">首页</a></li>
+								<li><a href="">电影</a></li>
+								<li><a href="">联系</a></li>
+								<li><a href="">后退</a></li>
+							</ul>
+							</li>
+						</ul>
+					</div>
+					<div id="dinner">
+						<ul id="touxiang_ul">
+							<li><div id="touxiang"><img src="../img/m17.jpeg" ></div></li>
+							<br>
+							<li><h4><small>Lanr</small></h4></li>
+							<br>
+							<li><h6>Music-blog-Lan</h6></li>
+							<br>
+							<li><span>——A blog focused on good music</span></li>
+							<br>
+							<br>
+							<li><h6>Collect only good music</h6></li>
+						</ul>
+					</div>
+				</div>
+			
+			<div id="inner_two">
+				<div id="outer">
+			
+				<div id="imgag" v-for="(item,index) in list">
+					<img width="50px" v-bind:src="item.imgurl1" alt="">
+				</div>
+				<div id="cont" v-for="(item,index) in list">
+					<br>
+					<br>
+					<h1>{{ item.name }}</h1>
+					<br>
+					<h3>{{ item.content }}</h3>
+					<br>
+					<br>
+					<br>
+					<br>
+					<div id="gequ">
+						<div id="gequ_one">
+						<h5><strong><a href="">· out to space</a></strong></h5>
+						<h5><strong><a href="">· simple bossa</a></strong></h5>
+						<h5><strong><a href="">· 愿星河入梦，你也入梦</a></strong></h5>
+						<h5><strong><a href="">· 空と海の詩</a></strong></h5>
+						</div>
+						<div id="gequ_one">
+						<h5><strong><a href="">· The way l Still love you</a></strong></h5>
+						<h5><strong><a href="">· Take Me Hand</a></strong></h5>
+						<h5><strong><a href="">· Lemon</a></strong></h5>
+						<h5><strong><a href="">· summer</a></strong></h5>
+							</div>
+					</div>
+					<div id="bottom">
+						<p>{{ item.miaoshu }}</p>
+					</div>
+					
+				</div>
+				</div>
+			
+			</div>
+			
+		</div>
+		
+	</body>
+</html>
+<script>
+	
+	     new Vue({
+	    
+	            el:'#app',
+	            data:{
+	                list:'这是列表'
+	            },
+	    
+	            methods:{
+	                fuzhi:function(){
+	                    let _this = this
+	                    axios.get('http://192.168.92.47:3000/getmusic_three').then(function (response) {
+	                        console.log(response.data.data);
+	                        console.log(this);
+	                        _this.list = response.data.data
+	                    })
+	                    console.log(this);
+	
+				}},
+				beforeMount:function(){
+						this.fuzhi();
+				}
+	})
+</script>

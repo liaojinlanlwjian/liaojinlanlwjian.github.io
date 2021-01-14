@@ -1,273 +1,842 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>天气预报和菜谱</title>
-    <script src="vue.js"></script>
-    <script src="axios.js"></script>
-    <link rel="stylesheet" href="bootstrap.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-	<style type="text/css">
-		td{
-			text-align: center;
-			line-height: normal;
-		}
-		.container1 select{
-			background-color: whitesmoke;
-			width: 150px;
-			height: 25px;
-			color: black;
-		}
-		.yeye{
-			display: flex;
-		}
-		.container1 button{
-			margin-left: 10px;
-			height: 25px;
-			line-height: 8px;
-		}
-		.inner{
-			display: flex;
-		}
-		.navbar{
-			display: flexbox;
-		}
-		.navbar-header{
-			display: flex;
-			position: relative;
-			left: 800px;}
-		.one{
-			margin-top: 12px;
-		}
-	</style>
-</head>
-<body>
-    <div id="app">
-        <div class="container">
-            
-					<nav class="navbar navbar-inverse">
-						<div id="lll">
-							<a class="navbar-brand" href="#"><strong>今晚的月色会美么</strong></a>
-						</div>
-					    <div class="container-fluid">
-					      <div class="navbar-header">
-							  <div v-for="(item,index) in list5"><img width="40" :src="'../icon/' + item + '.png'" alt=""></div>
-							  &nbsp;
-							  &nbsp;
-							  &nbsp;
-							  <div class="one" v-for="(item,index) in list4"><span style="color: whitesmoke;"><strong>{{item}}°C</strong></span></div>
-							&nbsp;
-							&nbsp;
-							  <div class="one" v-for="(item,index) in list6"><span style="color: whitesmoke;"><strong>{{item}}</strong></span></div>
-					      </div>
-						  
-					    </div>
-						
-					
-					</nav>
-					
-                    <!-- Collect the nav links, forms, and other content for toggling -->
-                      <nav aria-label="...">
-                        <ul class="pager">
-                          <li class="previous" @click="qihuanfun(true)"><a href="#" style="background-color: #00A3AF; color: #000000;"><span aria-hidden="true">&larr;</span> 天气预报</a></li>
-                          <li class="next" @click="qihuanfun(false)"><a href="#"  style="background-color: #00A3AF; color: #000000;">菜谱 <span aria-hidden="true">&rarr;</span></a></li>
-                        </ul>
-                      </nav>
-<!--天气预报，当hidden==true的时候显示-->
-           <div v-if="hidden">
-              <div class="page-header">
-                <h1> <strong>属于你的天气预报</strong></h1>
-				<h4>每一个明天都是未知的，但是我将尽我所能让你知晓明天的风雨</h4>
-              </div>
-			  <br>
-			  <div class="container1">
-			  	<div class="input-group">
-					<div class="yeye">
-					 输入你的省份：
-			   		<select name="" v-model="pro">
-			   		<option v-for="(item,index) in listr">{{index}}</option>
-			   		</select>
-					&nbsp;
-					&nbsp;
-					&nbsp;
-					输入你的城市：
-			   		<select name="" v-model="city">
-			   		<option v-for="(item,index) in listr[pro]">{{item}}</option>
-			   		</select>
-					<br>
-					<br>
-					<br>
-					<button type="button" class="btn btn-info" @click="getWeather">Go!</button>	
-					</div>
-			      </div>
-			  </div>
-			   
-			   <br>
-			   <br>
-			   <br>
-			   <br>
-               <div class="result">
-                   <table class="table table-bordered">
-                       <tr>
-                           <td>日期</td>
-                           <td>风向</td>
-                           <td>最高温度</td>
-                           <td>最低温度</td>
-                           <td>天气</td>
-                       </tr>
-                       <tr v-for="(item,index) in list1">
-                           <td>{{ item.date }}</td>
-                           <td>{{ item.day.winddirect }}</td>
-                           <td>{{ item.day.temphigh }}</td>
-                           <td>{{ item.night.templow }}</td>
-						   <td><img width="40" :src="'../icon/' + item.day.img + '.png'" alt=""></td>
-                       </tr>
-                   </table>
-				   <div class="panel panel-primary"   v-for="(itemss,indexs) in list3">
-					   <div class="list-group">
-					     <a href="#" class="list-group-item active">
-					      Just Love Her
-					     </a>
-					     <a href="#" class="list-group-item"> {{itemss.detail}}</a>
-					     <a href="#" class="list-group-item"> {{itemss.iname}}</a>
-					     <a href="#" class="list-group-item"> {{itemss.ivalue}}</a>
-					   </div>
-				   </div>
-               </div>
-               
-           </div>
-		   <br>
-		   <br>
-		   <br>
-<!--            菜谱，当hidden==false的时候显示-->
-            <div v-if="!hidden">
-				<div class="jumbotron">
-				  <h1>今天想吃什么？</h1>
-				  <p>即便我不知道你想吃什么，但我也会尽我所能找到你想吃的</p>
-				</div>
-				<div class="inner">
-				<div class="list-group" style="width: 300px;">
-				  <a href="#" class="list-group-item active">
-				    今日推荐
-				  </a>
-				  <a href="#" class="list-group-item">麻婆豆腐</a>
-				  <a href="#" class="list-group-item">水煮牛肉</a>
-				  <a href="#" class="list-group-item">鲫鱼牛逼汤</a>
-				</div>
-				&nbsp;
-				<div class="list-group" style="width: 300px;">
-				  <a href="#" class="list-group-item active" style="background-color: #87CEEB">
-				    不会就点我
-				  </a>
-				  <a href="#" class="list-group-item">麻辣香锅</a>
-				  <a href="#" class="list-group-item">红烧鱼</a>
-				  <a href="#" class="list-group-item">牛排</a>
-				</div>
-				&nbsp;
-				<div class="list-group" style="width: 300px;">
-				  <a href="#" class="list-group-item active" style="background-color: 	#D87093">
-				    你想吃吗？
-				  </a>
-				  <a href="#" class="list-group-item">红烧排骨</a>
-				  <a href="#" class="list-group-item">佛跳墙</a>
-				  <a href="#" class="list-group-item">酸菜鱼</a>
-				</div>
-				&nbsp;
-				<div class="list-group" style="width: 300px;">
-				  <a href="#" class="list-group-item active" style="background-color: #4B0082;">
-				    高级料理
-				  </a>
-				  <a href="#" class="list-group-item">雅蔑蝶</a>
-				  <a href="#" class="list-group-item">鸭嘴兽</a>
-				  <a href="#" class="list-group-item">故乡的花开了</a>
-				</div>
-				</div>
-				 <div class="input-group">
-					    <div class="form-group">
-					        <!-- <label for="keyword">输入关键字，白菜</label> -->
-							<input type="text" class="form-control" width="100px" v-model="keyword" id="keyword" placeholder="Search for...">
-					        <!-- <input type="text" class="form-control" v-model="keyword" id="keyword" placeholder="白菜"> -->
-					    </div>
-				      <span class="input-group-btn">
-				        <button class="btn btn-default" type="submit" @click="caipu">Go!</button>
-				      </span>
-				    </div>
-					<div class="media" v-for="(item,index) in list2">
-					  <div class="media-left media-middle">
-					    <a href="#">
-					      <img class="media-object" :src="item.pic" alt="你的菜">
-					    </a>
-					  </div>
-					  <div class="media-body">
-					    <h4 class="media-heading">{{ item.name }}</h4>
-						<p>{{ item.content }}</p>
-					    
-					  </div>
-					</div>
-		</div>
-
-        </div>
-    </div>
-</body>
-</html>
-<script>
-    /*
-    *   接口:/getweather
-    *
-    *   type:get
-    *
-    *   参数:city=城市名称
-    *
-    * */
-    new Vue({
-        el:'#app',
-        data:{
-			city:'',
-            list1:null,
-			list3:null,
-			list4:null,
-			list5:null,
-			list6:null,
-            hidden:true,
-            keyword:'猪肉',
-            num:5,
-            list2:[],
-			listr:{
-				'广西':['玉林','博白','桂林','南宁','百色','北海','防城港'],
-			'广东':['广州','佛山','云浮','深圳','中山','汕头'],
-			'台湾':['台北','台中','台南','高雄']
-			},
-			pro:'',
-        },
-        methods:{
-            getWeather:function(){
-                let _this = this;
-                axios.get('http://192.168.92.62:3000/getweather?city=' + this.city).then(function (response) {
-                    console.log(response.data.result);
-                    _this.list1 = response.data.result.daily
-                    _this.list3 = response.data.result.index
-                    _this.list4 = response.data.result.temp
-                    _this.list5 = response.data.result.img
-                    _this.list6 = response.data.result.week
-					console.log(response.data.result.week)
-					
-                })
-            },
-            qihuanfun:function(bool){
-                this.hidden = bool;
-            },
-			caipu:function(){
-			    let _this = this;
-			    axios.get('http://192.168.92.62:3000/getcaipu?keyword='+ this.keyword +'&num=' +  this.num).then(function (response) {
-			        console.log(response.data.result.list);
-					
-			        _this.list2 = response.data.result.list
-			    })
-			
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>lan的个人博客</title>
+		<style type="text/css">
+			*{
+				margin: 0px;
+				padding: 0px;
+				list-style: none;
 			}
-        },
-		beforeMount:function(){
-			this.getWeather();
+			img:hover {
+			    transform: translateX(-10px);
+			    transition: all .5s ease;
+			}
+			a{
+				text-decoration: none;
+			}
+			a:hover {
+			    text-decoration: underline;
+			}
+			#container{
+				/* display: flex; */
+				width: 100%;
+			}
+			#inner_one{
+				width: 30%;
+				height: 800px;
+				position: fixed;
+				top: 0px;
+				float: left;
+				background:url(./img/m17.jpeg);
+				background-repeat: no-repeat;
+				background-size:30% 120%;
+				background-attachment: fixed;
+			}
+			#inner_two{
+				width: 70%;
+				height: 3350px;
+				float: right;
+				background-color: #eaeaea;
+			}
+			#outer{
+				width: 90%;
+				height: 100%;
+				background-color:#f7f6f5;
+				border-radius: 1%;
+				margin: 0px auto;
+				margin-top: 5px;
+			}
+			#dinner{
+				width: 400px;
+				height: 500px;
+				margin: 100px auto;
+				margin-right: 10px;
+			}
+			#touxiang{
+				width: 80px;
+				height: 80px;
+			}
+			#touxiang img{
+				width: 80px;
+				height: 80px;
+				border-radius: 50%;
+				box-shadow: 0px 0px 50px brown;
+				
+			}
+			
+			#container:hover #touxiang{
+				transform: rotate(24160deg);
+				transition: all 720s linear 0s;
+			}
+			p{
+				border-radius: 50%;
+				background: whitesmoke;
+				position: absolute;
+				color: whitesmoke;
+				transition: all 1s linear 0s;
+			}
+			h4{
+				font-size: 20px;
+				color: gainsboro;
+				text-indent: 1em;
+			}
+			h5{
+				font-size: 18px;
+				text-indent: 2em;
+			}
+			h2{
+				text-shadow: 2px 2px lavenderblush;
+			}
+			h5 a{
+				color: dimgray;
+			}
+			h6{
+				font-size: 21px;
+				color: whitesmoke;
+				text-indent: 1em;
+				text-shadow: 1px 3px rosybrown;
+			}
+			h1{
+				color: #080808;
+				text-shadow: 1px 1px goldenrod;
+			}
+			#touxiang_ul span{
+				color: lightgray;
+			}
+			#outer_li li{
+				width: 90%;
+				height: 300px;
+				background: white;
+				border-radius: 15px;
+				margin: 10px auto;
+				border:  1px solid #d3d3d3;
+			}
+			.eve{
+			    display: flex;
+				}
+			#eve_img{
+				width: 200px;
+				height: 260px;
+				text-align: center;
+			}
+			#eve_img img{
+				width: 200px;
+				height: 240px;
+				border-radius: 5%;
+				margin-top: 30px;
+				margin-left: 10px;
+				box-shadow: 0px 0px 20px rosybrown;
+			}
+			#eve_cnt{
+				width: 70%;
+				height: 300px;
+				margin-top: 30px;
+				margin-left: 50px;
+			}
+			#eve_cnt span{
+				color: yellowgreen;
+				font-size: 4px;
+			}
+			
+			.bottom_music1 button{
+				width: 30px;
+				height: 30px;
+				margin-top: 20px;
+				float: right;
+				border-radius: 18% 0 0 18%;
+				border: 1px solid yellowgreen;
+				background-color: yellowgreen;
+				box-shadow: 0px 0px 10px bisque;
+			}
+			.inner{
+				float: right;
+			}
+			.inner li{
+				text-align: center;
+				line-height: 86px;
+			}
+			.ycan{
+				margin-top: -25px;
+				height: 0px;
+				overflow: hidden;
+			}
+			.ycan li{
+				width: 100px;
+				height: 50px;
+				background: url(./img/m13.jpeg);
+				background-repeat: no-repeat;
+				background-size:10% 100%;
+				background-attachment: fixed;
+				font-size: 15px;
+				color: white;
+				border: 1px solid gainsboro;
+				border-radius: 7% 7% 7% 7%;
+				line-height: 50px;
+				text-align: center;
+				margin-top: 1px;
+			}
+			.ycan li a{
+				color: white;
+			}
+			li:hover ul{
+				height: 500px;
+				transition: 2s linear 0s; 
+			}
+			#gequ{
+				display: flex;
+			}
+			#touxiang_ul2{
+				width: 350px;
+			}
+			#touxiang_ul2 li{
+				width: 80px;
+				float: left;
+			}
+			  #wrapper{
+			            position: relative;
+			            /* margin: 20px auto; */
+						margin-bottom: 40px;
+						margin-top: 40px;
+			            padding: 0;
+			            width: 50%;
+			            height: 600px;
+			        }
+					#wrapper img{
+						border-radius: 6% 6% 6% 6%;
+					}
+			        #wrapper .content{
+			            position: relative;
+			            width: 100%;
+			            height: 100%;
+			            overflow: hidden;
+			        }
+			        #wrapper>.content>.imgs{
+			            position: absolute;
+			            left: 0;
+			            top: 0;
+			            width: 100%;
+			            height: 100%;
+			            list-style: none;
+			        }
+			        #wrapper>.content>.imgs li{
+			            position:absolute;
+			            top:0;
+			            left:0;
+			            bottom:0;
+			            right:0;
+			            width: 100%;
+			            height: 100%;
+			        }
+			        #wrapper>.content>.imgs>li img{
+			            width: 100%;
+			            height: 100%;
+			        }
+			        #wrapper>.content>.dots{
+			            position: absolute;
+			            right: 10px;
+			            bottom: 10px;
+			            list-style: none;
+			        }
+			        #wrapper>.content>.dots li{
+			            float: left;
+			            width: 20px;
+			            height: 20px;
+			            text-align: center;
+			            line-height: 20px;
+			            /* border-radius: 50%; */
+			            margin-left:10px ;
+			            cursor: pointer;
+			        }
+			
+			        li.active{
+			            background-color: white;
+			        }
+			        li.quiet{
+			            background-color: #5a5a58;
+			        }
+			
+			        .btns{
+			            display: none;
+			        }
+			        .btns span{
+			            position: absolute;
+			            width: 40px;
+			            height: 40px;
+			            top: 50%;
+			            margin-top: -20px;
+			            line-height: 40px;
+			            text-align: center;
+			            font-weight: bold;
+			            font-family: Simsun;
+			            font-size: 30px;
+			            border: 1px solid #fff;
+			            opacity: 0.5;
+			            cursor: pointer;
+			            color: #fff;
+			            background: black;
+			        }
+			        .btns .left{
+			            left: 5px;
+			        }
+			        .btns .right{
+			            left: 100%;
+			            margin-left: -45px;
+			        } 
+					#footer{
+						width: 90%;
+						height: 200px;
+						background-color: #ececec;
+						margin-left: 50px;
+						margin-top: 130px;
+						border-radius: 15px;
+						border: 1px solid #d3d3d3;
+						text-align: center;
+					}
+					#footer_c{
+						margin: 100px auto;
+					}
+					#footer_c span{
+						font-size: 10px;
+					}
+					#frist_img{
+						color: greenyellow;
+						width: 200px;
+						height: 80px;
+						font-size: 25px;
+						line-height: 80px;
+						background-color: rgba(255,255,255,0.5);
+						border-radius: 5%;
+						position: relative;
+						top: -84px;
+						left: 10px;
+						opacity: 0;
+						transition: all 1s linear 0s;
+					}
+					 #eve_img:hover #frist_img{
+						opacity: 1;
+					}
+					
+					#content{
+						width: 40%;
+						height: 600px;
+						background-color: rgba(255,255,255,0.5);
+						margin-left: 35px;
+						margin-top: 40px;
+						border-radius: 15px;
+						border: 1px solid #d3d3d3;
+					}
+					#four_img{
+						display: flex;
+						margin-left: 45px;
+					}
+					#text_sh{
+						text-align: left;
+						color: yellowgreen;
+						margin-left: 18px;
+						font-size: 18px;
+					}
+					#text_sh1{
+						text-align: left;
+						color: thistle;
+						margin-left: 18px;
+						font-size: 18px;
+					}
+					#text_sh2{
+						text-align: left;
+						color: lightpink;
+						margin-left: 18px;
+						font-size: 18px;
+					}
+					.music{
+						margin-left:200px;
+					}
+					#two_img{
+						background-color:  rgba(255,255,255,0.4);
+						width: 455px;
+						height: 200px;
+						position: absolute;
+						border-radius: 20px;
+						left: 554px;
+						top: 149px;
+						color: crimson;
+						text-align: center;
+						line-height: 200px;
+						font-size: 30px;
+						opacity: 0;
+						transition: all 1s linear 0s;
+					}
+					#four_img:hover #two_img{
+						opacity: 1;
+					}
+		</style>
+	</head>
+	<body id="body">
+		<div id="container">
+			<div id="inner_one">
+				<div>
+					<ul class="inner">
+						<li><a href=""><img src="./img/0.png" ></a>
+						<ul class="ycan">
+							<li><a href="博客.html">首页</a></li>
+							<li><a href="">电影</a></li>
+							<li><a href="">联系</a></li>
+							<li><a href="">后退</a></li>
+						</ul>
+						</li>
+					</ul>
+				</div>
+				<div id="dinner">
+					<ul id="touxiang_ul">
+						<li><div id="touxiang"><img src="./img/m19.jpeg" ></div></li>
+						<br>
+						<li><h4><small>Lanr</small></h4></li>
+						<br>
+						<li><h6>Music-blog-Lan</h6></li>
+						<br>
+						<li><span>——A blog focused on good music</span></li>
+						<br>
+						<br>
+						<li><h6>Collect only good music</h6></li>
+					</ul>
+				</div>
+				
+				
+			</div>
+			<div id="inner_two">
+				<div id="outer">
+					<div class="bottom_music">
+						<iframe frameborder="0" border="1"
+					marginwidth="0" marginheight="0"
+					width="100%" height="100" 
+					src="//music.163.com/outchain/player?type=2&id=2175282&auto=0&height=66"></iframe>
+					
+					</div>
+					<div id="four_img">
+						<div id = "wrapper">
+						        <div class="content">
+						            <ul class="imgs">
+						                <li><img class="img" src="./img/m55.jpeg"/></li>
+						                <li><img class="img" src="./img/m56.jpeg"/></li>
+						                <li><img class="img" src="./img/m52.jpeg"/></li>
+						                <li><img class="img" src="./img/m53.jpeg"/></li>
+						                <li><img class="img" src="./img/m54.jpeg"/></li>
+										
+						            </ul>
+								
+						            <ul class='dots'></ul>
+						        </div>
+						        <div class="btns">
+						            <span class="left">&lt;</span>
+						            <span class="right">&gt;</span>
+						        </div>
+						    </div>
+							<div id="two_img"><a href="">♫▶</a></div>
+							<div id="content">
+								<h1>&nbsp; &nbsp;飙升榜</h1>
+								<br>
+								<div id="text_sh"></div>
+								<br>
+								<hr >
+								<h1>&nbsp; &nbsp;热歌榜</h1>
+								<br>
+								<div id="text_sh1"></div>
+								<br>
+								<hr >
+								<h1>&nbsp; &nbsp;国风热歌榜</h1>
+								<br>
+								<div id="text_sh2"></div>
+							</div>
+					</div>
+					<ul id="outer_li">
+						<li>
+							<div class="eve">
+								<div id="eve_img">
+									<a href="music_one.html"><img src="./img/m1.jpeg"></a>
+								<div id="frist_img">
+								<a href="">♫▶</a>
+								</div>
+									
+								</div>
+								<div id="eve_cnt">
+									<h2><img src="./img/1.6.jpg" >&nbsp;&nbsp;恬静心情——You need some quiet music</h2>
+									<br>
+									<h4>May 28, 2012 in tranquilpeak, features</h4>
+									<br>
+									<div id="gequ">
+										<div id="gequ_one">
+										<h5><strong><a href="">· out to space</a></strong></h5>
+										<h5><strong><a href="">· simple bossa</a></strong></h5>
+										<h5><strong><a href="">· 愿星河入梦，你也入梦</a></strong></h5>
+										<h5><strong><a href="">· 空と海の詩</a></strong></h5>
+										</div>
+										<div id="gequ_one">
+										<h5><strong><a href="">· The way l Still love you</a></strong></h5>
+										<h5><strong><a href="">· Take Me Hand</a></strong></h5>
+										<h5><strong><a href="">· Lemon</a></strong></h5>
+										<h5><strong><a href="">· summer</a></strong></h5>
+											</div>
+									</div>
+									
+									<br>
+									<a href=""><span><详情></span></a>
+								</div>
+							 </div>
+						</li>
+						<li>
+							<div class="eve">
+								<div id="eve_img">
+									<a href="music_two.html"><img src="./img/m2.jpeg"></a>
+									<div id="frist_img">
+									<a href="">♫▶</a>
+									</div>
+								</div>
+								<div id="eve_cnt">
+									<h2><img src="./img/1.6.jpg" >&nbsp;派对专属——It's time for some happy music</h2>
+									<br>
+									<h4>Mar 03, 2017 in tranquilpeak, features</h4>
+									<br>
+									<div id="gequ">
+										<div id="gequ_one">
+										<h5><strong><a href="">· Golden</a></strong></h5>
+										<h5><strong><a href="">· Nothing Compare</a></strong></h5>
+										<h5><strong><a href="">· Tusa</a></strong></h5>
+										<h5><strong><a href="">· Paycho</a></strong></h5>
+										</div>
+										<div id="gequ_one">
+										<h5><strong><a href="">· 夜色</a></strong></h5>
+										<h5><strong><a href="">· Come This Far</a></strong></h5>
+										<h5><strong><a href="">· 独自去偷欢</a></strong></h5>
+										<h5><strong><a href="">· Hyperreal</a></strong></h5>
+											</div>
+									</div>
+									<br>
+									<a href=""><span><详情></span></a>
+								</div>
+							 </div>
+						</li>
+						<li>
+							<div class="eve">
+								<div id="eve_img">
+									<a href="music_three.html"><img src="./img/m3.jpeg"></a>
+									<div id="frist_img">
+									<a href="">♫▶</a>
+									</div>
+								</div>
+								<div id="eve_cnt">
+									<h2><img src="./img/1.6.jpg" >&nbsp;你不是一个人在战斗——Someone fight with you</h2>
+									<br>
+									<h4>Dec 22, 2015 in tranquilpeak, features</h4>
+									<br>
+									<div id="gequ">
+										<div id="gequ_one">
+										<h5><strong><a href="">· You Are Not Alone</a></strong></h5>
+										<h5><strong><a href="">· Best Friend</a></strong></h5>
+										<h5><strong><a href="">· Just For A Moment</a></strong></h5>
+										<h5><strong><a href="">· 温柔</a></strong></h5>
+										</div>
+										<div id="gequ_one">
+										<h5><strong><a href="">· Baby One More Time</a></strong></h5>
+										<h5><strong><a href="">· Man In The Mirror</a></strong></h5>
+										<h5><strong><a href="">· Loving You</a></strong></h5>
+										<h5><strong><a href="">· Cry on my shoulder</a></strong></h5>
+											</div>
+									</div>
+									<br>
+									<a href=""><span><详情></span></a>
+								</div>
+							 </div>
+						</li>
+						<li>
+							<div class="eve">
+								<div id="eve_img">
+									<a href="music_four.html"><img src="./img/m15.jpeg"></a>
+									<div id="frist_img">
+									<a href="">♫▶</a>
+									</div>
+								</div>
+								<div id="eve_cnt">
+									<h2><img src="./img/1.6.jpg" >&nbsp;歌曲可以带来快乐——Music can bring power</h2>
+									<br>
+									<h4>Nov 02, 2015 in tranquilpeak, features</h4>
+									<br>
+									<div id="gequ">
+										<div id="gequ_one">
+										<h5><strong><a href="">· Swimming Pools</a></strong></h5>
+										<h5><strong><a href="">· Tokyo</a> </strong></h5>
+										<h5><strong><a href="">· Free Loop</a></strong></h5>
+										<h5><strong><a href="">· Shape of My Heart </a></strong></h5>
+										</div>
+										<div id="gequ_one">
+										<h5><strong><a href="">· Iridescent</a> </strong></h5>
+										<h5><strong><a href="">· Leave Out All the Rest</a></strong></h5>
+										<h5><strong><a href="">· Decode </a></strong></h5>
+										<h5><strong><a href="">· Try </a></strong></h5>
+											</div>
+									</div>
+									<br>
+									<a href=""><span><详情></span></a>
+								</div>
+							 </div>
+						</li>
+						<li>
+							<div class="eve">
+								<div id="eve_img">
+									<a href=""><img src="./img/m4.jpeg"></a>
+									<div id="frist_img">
+									<a href="">♫▶</a>
+									</div>
+								</div>
+								<div id="eve_cnt">
+									<h2><img src="./img/1.6.jpg" >&nbsp;浪漫心情——Romantic people have romance</h2>
+									<br>
+									<h4>Aug 14, 2015 in tranquilpeak, features</h4>
+									<br>
+									<div id="gequ">
+										<div id="gequ_one">
+										<h5><strong><a href="">· Never Say Goodbye</a></strong></h5>
+										<h5><strong><a href="">· Hotel California</a> </strong></h5>
+										<h5><strong><a href="">· Don't Cry</a></strong></h5>
+										<h5><strong><a href="">· Fighter </a></strong></h5>
+										</div>
+										<div id="gequ_one">
+										<h5><strong><a href="">· Lemon Tree</a> </strong></h5>
+										<h5><strong><a href="">· Dreaming My Dream</a></strong></h5>
+										<h5><strong><a href="">· Imagine </a></strong></h5>
+										<h5><strong><a href="">· Yesterday</a> </strong></h5>
+											</div>
+									</div>
+									<br>
+									<a href=""><span><详情></span></a>
+								</div>
+							 </div>
+						</li>
+						<li>
+							<div class="eve">
+								<div id="eve_img">
+									<a href=""><img src="./img/m18.jpeg"></a>
+									<div id="frist_img">
+									<a href="">♫▶</a>
+									</div>
+								</div>
+								<div id="eve_cnt">
+									<h2><img src="./img/1.6.jpg" >&nbsp;爱情是一种什么东西——What is love</h2>
+									<br>
+									<h4>Feb 03, 2015 in tranquilpeak, features</h4>
+									<br>
+									<div id="gequ">
+										<div id="gequ_one">
+										<h5><strong><a href="">· Paparazzi </a></strong></h5>
+										<h5><strong><a href="">· Speechless </a> </strong></h5>
+										<h5><strong><a href="">· You Belong With Me</a></strong></h5>
+										<h5><strong><a href="">· I Knew You Were Trouble </a></strong></h5>
+										</div>
+										<div id="gequ_one">
+										<h5><strong><a href="">· Dream It Possible</a> </strong></h5>
+										<h5><strong><a href="">· Let Her Go</a></strong></h5>
+										<h5><strong><a href="">· Take Me to Church</a> </strong></h5>
+										<h5><strong><a href="">· Love the Way You Lie </a></strong></h5>
+											</div>
+									</div>
+									<br>
+									<a href=""><span><详情></span></a>
+								</div>
+							 </div>
+						</li>
+						<li>
+							<div class="eve">
+								<div id="eve_img">
+									<a href=""><img src="./img/m6.jpeg"></a>
+									<div id="frist_img">
+									<a href="">♫▶</a>
+									</div>
+								</div>
+								<div id="eve_cnt">
+									<h2><img src="./img/1.6.jpg" >&nbsp;当海洋的味道与Music搅拌——The taste of the sea</h2>
+									<br>
+									<h4>Oct 20, 2015 in tranquilpeak, features</h4>
+									<br>
+									<div id="gequ">
+										<div id="gequ_one">
+										<h5><strong><a href="">· Scars to Your Beautiful </a></strong></h5>
+										<h5><strong><a href="">· 22 </a></strong></h5>
+										<h5><strong><a href="">· Waka Waka</a></strong></h5>
+										<h5><strong><a href="">· Price Tag </a></strong></h5>
+										</div>
+										<div id="gequ_one">
+										<h5><strong><a href="">· Halo  </a></strong></h5>
+										<h5><strong><a href="">· If I Were A Boy</a></strong></h5>
+										<h5><strong><a href="">· What Makes You Beautiful </a></strong></h5>
+										<h5><strong><a href="">· Rolling in the Deep</a></strong></h5>
+											</div>
+									</div>
+									<br>
+									<a href=""><span><详情></span></a>
+								</div>
+							 </div>
+						</li>
+						
+					</ul>
+					<div id="footer">
+							<div id="footer_c">
+								©刘万健的个人博客 2021-1-13~
+								<br>
+									<span id="">
+										京ICP证030173号 
+									</span>
+							</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+		var cc = 0;
+		var aa = 0;
+		var bb = 0;
+		var typingtext1 = "❤ 白月光与朱砂痣<br>❤ 醒不来的梦<br>❤ 晴天<br>❤ 执迷不悟<br>❤ Dear John"
+		var typingtext2 = "❣ 踏山河<br>❣ 燕无歇<br>❣ 衣带渐宽<br>❣ 爱江山更爱美人<br>❣ 江湖觅知音"
+		var typingtext = "♡ 记忆和记忆之间<br>♡ Chemtrails Over The Country Club<br>♡ 一生不变<br>♡ 春天里<br>♡ 我的天空"
+		var myBlock=document.getElementById('text_sh');
+		var myBlock1=document.getElementById('text_sh1');
+		var myBlock2=document.getElementById('text_sh2');
+		function type(){
+		 if(cc<=typingtext.length&&aa<=typingtext1.length&&bb<=typingtext2.length){
+		 myBlock.innerHTML=typingtext.substring(0,cc);
+		 cc++;
+		 myBlock1.innerHTML=typingtext1.substring(0,cc);
+		 cc++;
+		 myBlock2.innerHTML=typingtext2.substring(0,cc);
+		 cc++;
+		 aa++;
+		 bb++;
+		 }else{
+		 window.clearInterval(intervalID);
+		 }
 		}
-    })
+		var intervalID=window.setInterval(type,300);
+	
+	
+	
+	 var index=0;
+	        var imgs = document.getElementsByClassName("img");
+	        var dots = document.getElementsByClassName("dots")[0];
+	        var btns = document.getElementsByClassName("btns")[0];
+	        var dotss = dots.children;
+	        
+	        var len = imgs.length;  //图片张数
+	        var timer = null; //定时器
+	
+	        // 创建一个文档片段，此时还没有插入到 DOM 结构中
+	        const frag = document.createDocumentFragment()
+	        // 根据图片数量添加相应的小圆点到文档片段中
+	        for (let i=0; i<len; i++){
+	            const dot = document.createElement("li");
+	            dot.className = 'quiet';
+	            // 先插入文档片段中
+	            frag.appendChild(dot);
+	        }
+	        // 将小圆点片段统一插入到 DOM 结构中
+	        dots.appendChild(frag)
+	        // 第一个小圆点高亮显示
+	        dots.children[0].className = "active";
+	
+	        //改变图片
+	        function ChangeImg() {
+	            index++;
+	            if(index>=len) index=0;
+	
+	            // 循环将全部图片和圆点重置为默认样式
+	            for(var i=0; i<len; i++){
+	                imgs[i].style.display='none';
+	                dotss[i].className = "quiet";
+	            }
+	
+	            // 将当前图片显示
+	            imgs[index].style.display='block';
+	            // 将当前圆点添加高亮样式
+	            dotss[index].className = "active";
+	        }
+	
+	        // 循环添加小圆点的触发事件
+	        for(var i=0; i<len; i++){
+	            dotss[i].index = i;
+	            dotss[i].onmouseover = function(){
+	                for(var j=0; j<len; j++){
+	                    imgs[j].style.display='none';
+	                    dotss[j].className = "quiet";
+	                }
+	                this.className = "active";
+	                index = this.index;
+	                imgs[index].style.display='block';
+	            }
+	        }
+	
+	        // 添加事件：鼠标移动到wrapper上，左右切换按钮显示
+	        wrapper.onmouseover = function(){
+	            clearInterval(timer);
+	            btns.style.display = 'block';
+	        }
+	        // 添加事件：鼠标移出wrapper，左右切换按钮隐藏
+	        wrapper.onmouseout = function(){
+	            timer = setInterval(ChangeImg,2000);
+	            btns.style.display = 'none';
+	        }
+	
+	
+	         // 点击上一张按钮 触发事件
+	        btns.children[0].onclick = function(){ 
+	            index--;
+	            //滚动完第一项后
+	            if(index< 0){                              
+	                index = len-1;
+	            }
+	 
+	            // 循环将全部图片和圆点重置为默认样式
+	            for(var i=0; i<len; i++){
+	                imgs[i].style.display='none';
+	                dotss[i].className = "quiet";
+	            }
+	
+	            // 将当前图片显示
+	            imgs[index].style.display='block';
+	            // 将当前圆点添加高亮样式
+	            dotss[index].className = "active";
+	
+	        }
+	        // 点击下一张按钮 触发事件
+	        btns.children[1].onclick = ChangeImg;
+	
+	        //设置定时器，每隔两秒切换一张图片
+	        timer = setInterval(ChangeImg,2000);
+			
+			  function snow(){
+				  var div = document.createElement('p');
+				      //  设置随机大小的宽度和高度
+				      div.style.width = (Math.floor(Math.random()*1000000)%10) + 'px';
+				      div.style.height = div.style.width;
+				  
+				      //  设置div的随机位置
+				      div.style.top = (Math.floor(Math.random()*1000000)%1000 - 800) + 'px';
+				      div.style.left = (Math.floor(Math.random()*1000000)%1492) + 'px';
+				  
+				      //  计时器，雪球下落
+				      setInterval(function(){
+				          div.style.top = div.offsetTop + 10 + 'px';
+				          div.style.left = div.offsetLeft + ((Math.floor(Math.random()*1000000)%10)-5) + 'px';
+				          if(div.offsetTop > 2200){
+				              div.style.top = (Math.floor(Math.random()*1000000)%1000 - 500) + 'px';
+				          }
+				      },50)
+				      //  把div插入到body里面
+				      body.appendChild(div);
+				  }
+				  
+				  // for(i=0;i<500;i++){
+				  //     snow()
+				  // }
+     //    //  创建一个div
+       
 </script>
